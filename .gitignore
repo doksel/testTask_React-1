@@ -2,6 +2,8 @@ node_modules
 
 package-lock.json
 
+.sass-cache
+
 .idea
 node_modules
 npm-debug.log
