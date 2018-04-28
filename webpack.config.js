@@ -8,6 +8,12 @@ let conf = {
     filename: 'main.js',
     publicPath: 'dist/'
   },
+  // entry: './app/app.jsx',
+  // output: {
+  //   path: path.resolve(__dirname, './public'),
+  //   filename: 'bundle.js',
+  //   publicPath: 'public/'
+  // },
 
   devServer: {
     overlay: true
@@ -20,15 +26,39 @@ let conf = {
         loader: 'babel-loader'
       },
       {
+        test: /\.jsx?$/,
+        exclude: /(node_modules)/,
+        loader: "babel-loader",
+        options:{
+            presets:["env", "react"]
+        }
+      },
+      {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
           fallback: "style-loader",
           use: "css-loader"
         })
-        /*use: [
-          'style-loader',
-          'css-loader'
-        ]*/
+      },
+      {
+        test: /\.(scss)$/,
+        use: [{
+          loader: 'style-loader',
+        }, {
+          loader: 'css-loader', 
+        }, {
+          loader: 'postcss-loader', 
+          options: {
+            plugins: function () {
+              return [
+                require('precss'),
+                require('autoprefixer')
+              ];
+            }
+          }
+        }, {
+          loader: 'sass-loader'
+        }]
       },
     ]
   },
@@ -43,26 +73,3 @@ module.exports = (env, options) => {
   conf.devtool = production ? 'source-map' : 'eval-sourcemap';
   return conf;
 }
-
-...
-{
-  test: /\.(scss)$/,
-  use: [{
-    loader: 'style-loader', // inject CSS to page
-  }, {
-    loader: 'css-loader', // translates CSS into CommonJS modules
-  }, {
-    loader: 'postcss-loader', // Run post css actions
-    options: {
-      plugins: function () { // post css plugins, can be exported to postcss.config.js
-        return [
-          require('precss'),
-          require('autoprefixer')
-        ];
-      }
-    }
-  }, {
-    loader: 'sass-loader' // compiles Sass to CSS
-  }]
-},
-...
